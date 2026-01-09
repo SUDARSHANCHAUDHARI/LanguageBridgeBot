@@ -66,6 +66,8 @@ function getConfig() {
     // Google Cloud Translation API
     google: {
       translateApiKey: process.env.GOOGLE_TRANSLATE_API_KEY,
+      visionApiKey: process.env.GOOGLE_VISION_API_KEY,
+      speechApiKey: process.env.GOOGLE_SPEECH_API_KEY,
     },
     
     // MongoDB Configuration
@@ -88,6 +90,30 @@ function getConfig() {
     rateLimit: {
       window: parseInt(process.env.RATE_LIMIT_WINDOW || OPTIONAL_VARS.RATE_LIMIT_WINDOW, 10),
       maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || OPTIONAL_VARS.RATE_LIMIT_MAX_REQUESTS, 10),
+    },
+    
+    // Premium/Stripe Configuration
+    stripe: {
+      secretKey: process.env.STRIPE_SECRET_KEY,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    },
+    
+    // OpenAI Configuration
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY,
+    },
+    
+    // Dashboard Configuration
+    dashboard: {
+      secretKey: process.env.DASHBOARD_SECRET_KEY,
+      port: parseInt(process.env.DASHBOARD_PORT || '3001', 10),
+    },
+    
+    // Feature Flags
+    features: {
+      multiBot: process.env.ENABLE_MULTI_BOT === 'true',
+      abTesting: process.env.ENABLE_AB_TESTING === 'true',
     },
   };
   

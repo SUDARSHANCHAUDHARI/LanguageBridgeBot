@@ -1,199 +1,357 @@
 # API Documentation
 
-Technical documentation for @LanguageBridgeBot.
+## Overview
 
-## API Endpoints
+LanguageBridgeBot provides RESTful API endpoints for monitoring, analytics, and administration.
+
+**Base URL:** `https://your-domain.com`
+
+## Authentication
+
+Most endpoints require authentication using the `DASHBOARD_SECRET_KEY` environment variable.
+
+### Headers
+```
+Authorization: your_dashboard_secret_key
+```
+
+Or as query parameter:
+```
+?token=your_dashboard_secret_key
+```
+
+## Endpoints
 
 ### Health Check
 
-**GET** `/health`
+#### `GET /health`
 
-Returns server health status.
+Check server health status.
+
+**No authentication required**
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "api": "available",
+  "cache": "operational",
+  "memory": {
+    "used": "150MB",
+    "total": "512MB"
+  },
+  "timestamp": "2024-01-09T10:00:00.000Z"
+}
+```
+
+---
+
+### Dashboard
+
+#### `GET /dashboard`
+
+Get dashboard overview with statistics.
+
+**Authentication:** Required
 
 **Response:**
 ```json
 {
   "status": "ok",
-  "timestamp": "2025-01-09T12:00:00.000Z",
-  "version": "1.0.0"
+  "dashboard": {
+    "stats": {
+      "totalGroups": 150,
+      "totalMessages": 5000,
+      "totalTranslations": 12000,
+      "activeUsers": 200,
+      "cacheHitRate": 0.75,
+      "avgResponseTime": 250
+    },
+    "health": { ... },
+    "groups": [ ... ]
+  }
 }
 ```
 
 ---
 
-### Webhook Endpoint
+#### `GET /dashboard/groups`
 
-**POST** `/webhook`
+Get all active groups with statistics.
 
-LINE webhook endpoint for receiving messages.
+**Authentication:** Required
 
-**Headers:**
-- `X-Line-Signature`: LINE webhook signature (required)
-- `Content-Type`: `application/json`
-
-**Request Body:**
+**Response:**
 ```json
 {
-  "events": [
+  "status": "ok",
+  "groups": [
     {
-      "type": "message",
-      "message": {
-        "type": "text",
-        "text": "Hello"
-      },
-      "source": {
-        "userId": "U1234567890",
-        "type": "user"
-      },
-      "replyToken": "reply_token_here",
-      "timestamp": 1234567890
+      "groupId": "C1234567890",
+      "groupName": "My Group",
+      "languages": ["en", "th", "ja"],
+      "isPremium": false,
+      "stats": {
+        "totalUsage": 500,
+        "dailyUsage": 50,
+        "lastActive": "2024-01-09T10:00:00.000Z"
+      }
     }
-  ]
+  ],
+  "total": 150
 }
+```
+
+---
+
+#### `GET /dashboard/groups/:groupId`
+
+Get detailed information about a specific group.
+
+**Authentication:** Required
+
+**Parameters:**
+- `groupId` (path) - LINE group ID
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "group": {
+    "groupId": "C1234567890",
+    "config": {
+      "languages": ["en", "th", "ja"],
+      "groupName": "My Group"
+    },
+    "stats": {
+      "totalUsage": 500,
+      "dailyUsage": 50,
+      "lastActive": "2024-01-09T10:00:00.000Z"
+    }
+  }
+}
+```
+
+---
+
+### Analytics
+
+#### `GET /dashboard/analytics`
+
+Get comprehensive analytics data.
+
+**Authentication:** Required
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "analytics": {
+    "totalMessages": 5000,
+    "totalTranslations": 12000,
+    "activeUsers": 200,
+    "cacheHitRate": 0.75,
+    "avgResponseTime": 250,
+    "errorRate": 0.02,
+    "topGroups": [ ... ],
+    "totalGroups": 150,
+    "abTesting": { ... }
+  }
+}
+```
+
+---
+
+#### `GET /dashboard/analytics/trends`
+
+Get usage trends over time.
+
+**Authentication:** Required
+
+**Query Parameters:**
+- `period` (optional) - `daily`, `weekly`, or `monthly` (default: `daily`)
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "trends": {
+    "period": "daily",
+    "data": [
+      {
+        "date": "2024-01-09",
+        "messages": 150,
+        "translations": 300
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### `GET /dashboard/analytics/languages`
+
+Get language usage statistics.
+
+**Authentication:** Required
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "languages": {
+    "mostTranslatedFrom": [
+      { "lang": "en", "count": 2000 },
+      { "lang": "th", "count": 1500 }
+    ],
+    "mostTranslatedTo": [
+      { "lang": "en", "count": 1800 },
+      { "lang": "th", "count": 1200 }
+    ],
+    "languagePairs": [
+      { "from": "en", "to": "th", "count": 500 }
+    ]
+  }
+}
+```
+
+---
+
+#### `GET /dashboard/analytics/performance`
+
+Get performance metrics.
+
+**Authentication:** Required
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "performance": {
+    "avgResponseTime": 250,
+    "cacheHitRate": 0.75,
+    "errorRate": 0.02,
+    "systemHealth": { ... }
+  }
+}
+```
+
+---
+
+### Admin
+
+#### `GET /admin/stats`
+
+Get comprehensive admin statistics.
+
+**Authentication:** Required (via `X-Admin-Token` header or `ADMIN_TOKEN` env var)
+
+**Headers:**
+```
+X-Admin-Token: your_admin_token
 ```
 
 **Response:**
 ```json
 {
-  "status": "ok"
+  "analytics": { ... },
+  "system": {
+    "memory": { ... },
+    "cpu": { ... }
+  },
+  "groups": {
+    "active": 150,
+    "list": [ ... ]
+  },
+  "health": { ... },
+  "timestamp": "2024-01-09T10:00:00.000Z"
 }
 ```
 
 ---
 
-## Database Schema
+## Error Responses
 
-### Groups Collection
+All endpoints may return error responses in the following format:
 
-```javascript
+```json
 {
-  groupId: String,           // LINE group ID or user ID (unique)
-  groupName: String,          // Display name
-  languages: [String],        // Language codes, e.g., ['en', 'th', 'hi']
-  mode: String,              // 'bilingual' or 'multilingual'
-  isActive: Boolean,         // Active status
-  isPremium: Boolean,        // Premium status
-  messageCount: Number,      // Total messages translated
-  characterCount: Number,    // Total characters translated
-  createdAt: Date,          // Creation timestamp
-  lastUsedAt: Date         // Last usage timestamp
+  "error": "Error message",
+  "status": "error"
 }
 ```
 
-**Indexes:**
-- `groupId` (unique)
-- `isActive`
-- `lastUsedAt`
+**Status Codes:**
+- `200` - Success
+- `401` - Unauthorized
+- `404` - Not Found
+- `500` - Internal Server Error
+- `503` - Service Unavailable
 
 ---
 
-## Code Architecture
+## Rate Limiting
 
-### Directory Structure
+API endpoints are rate-limited to prevent abuse:
+- **Dashboard endpoints:** 100 requests per minute
+- **Admin endpoints:** 50 requests per minute
 
+Rate limit headers are included in responses:
 ```
-src/
-├── bot/
-│   ├── webhook.js          # LINE webhook handler
-│   ├── messageHandler.js   # Message processing logic
-│   └── commands.js         # Command handlers
-├── services/
-│   ├── translationService.js  # Google Translation API
-│   ├── cacheService.js        # Caching layer
-│   ├── databaseService.js     # MongoDB operations
-│   └── usageService.js        # Usage tracking
-├── utils/
-│   ├── validators.js          # Input validation
-│   ├── messageFormatter.js    # Message formatting
-│   ├── rateLimiter.js        # Rate limiting
-│   ├── antiSpam.js           # Spam detection
-│   └── errorHandler.js       # Error handling
-├── middleware/
-│   ├── security.js            # Security middleware
-│   └── logger.js              # Request logging
-├── config/
-│   ├── constants.js           # Constants and language data
-│   └── environment.js         # Environment configuration
-└── index.js                   # Main entry point
-```
-
-### Data Flow
-
-1. **Webhook Request** → Security middleware → Webhook handler
-2. **Event Processing** → Message handler → Command check
-3. **Translation Flow** → Language detection → Multi-language translation
-4. **Response** → Format message → Send reply → Update stats
-
-### Service Dependencies
-
-```
-index.js
-  └── webhook.js
-      └── messageHandler.js
-          ├── commands.js
-          ├── translationService.js
-          │   └── cacheService.js
-          ├── databaseService.js
-          ├── usageService.js
-          └── messageFormatter.js
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1641734400
 ```
 
 ---
 
-## Environment Variables
+## Webhooks
 
-See `.env.example` for complete list.
+### LINE Webhook
 
-**Required:**
-- `LINE_CHANNEL_ACCESS_TOKEN`
-- `LINE_CHANNEL_SECRET`
-- `GOOGLE_TRANSLATE_API_KEY`
-- `MONGODB_URI`
+**Endpoint:** `POST /webhook`
 
-**Optional:**
-- `PORT` (default: 3000)
-- `NODE_ENV` (default: development)
-- `CACHE_TTL` (default: 3600)
-- `RATE_LIMIT_WINDOW` (default: 60000)
-- `RATE_LIMIT_MAX_REQUESTS` (default: 30)
+Receives events from LINE platform. See LINE Messaging API documentation for event structure.
+
+### Stripe Webhook
+
+**Endpoint:** `POST /webhook/stripe`
+
+Receives payment events from Stripe for premium subscriptions.
 
 ---
 
-## Error Codes
+## Swagger/OpenAPI
 
-- `TRANSLATION_ERROR` - Translation API failure
-- `VALIDATION_ERROR` - Input validation failure
-- `RATE_LIMIT_ERROR` - Rate limit exceeded
-- `DATABASE_ERROR` - Database operation failure
-- `API_ERROR` - External API failure
-- `USAGE_LIMIT_ERROR` - Usage limit exceeded
+For interactive API documentation, see `/api-docs` endpoint (if Swagger UI is enabled).
 
 ---
 
-## Rate Limits
+## Examples
 
-- **IP-based:** 100 requests/minute
-- **Group-based:** 30 requests/minute
-- **Free tier:** 20 messages/day
-- **Premium:** Unlimited
+### cURL Examples
+
+**Health Check:**
+```bash
+curl https://your-domain.com/health
+```
+
+**Get Dashboard Stats:**
+```bash
+curl -H "Authorization: your_secret_key" \
+  https://your-domain.com/dashboard
+```
+
+**Get Group Details:**
+```bash
+curl -H "Authorization: your_secret_key" \
+  https://your-domain.com/dashboard/groups/C1234567890
+```
 
 ---
 
-## Security
+## Support
 
-- LINE signature validation (HMAC SHA256)
-- Rate limiting per IP and group
-- Input sanitization
-- Spam detection
-- Security headers (Helmet)
-- CORS configuration
-
----
-
-## Monitoring
-
-- Health check endpoint: `/health`
-- Request logging with request IDs
-- Error logging with context
-- Cache statistics
-- Usage statistics
+For API support, please refer to the main documentation or contact the development team.

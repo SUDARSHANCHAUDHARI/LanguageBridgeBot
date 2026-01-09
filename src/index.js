@@ -95,6 +95,30 @@ app.get('/admin/stats', async (req, res) => {
   }
 });
 
+// Swagger API documentation
+const { setupSwagger } = require('./swagger');
+setupSwagger(app);
+
+// Dashboard routes
+const dashboardRouter = require('./dashboard/index');
+const analyticsRouter = require('./dashboard/analytics');
+app.use('/dashboard', dashboardRouter);
+app.use('/dashboard/analytics', analyticsRouter);
+
+// Stripe webhook endpoint (for premium subscriptions)
+app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const { handleWebhookEvent, verifyWebhookSignature } = require('./services/paymentService');
+    const signature = req.headers['stripe-signature'];
+    const event = verifyWebhookSignature(req.body, signature);
+    await handleWebhookEvent(event);
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Stripe webhook error:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // LINE webhook endpoint with security middleware
 app.post('/webhook',
   rateLimiter,              // IP-based rate limiting

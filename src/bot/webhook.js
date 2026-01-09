@@ -7,6 +7,8 @@ const line = require('@line/bot-sdk');
 const crypto = require('crypto');
 const config = require('../config/environment');
 const { handleMessage } = require('./messageHandler');
+const { handleRichMenuPostback } = require('./richMenu');
+const { routeToBot } = require('../services/multiBotService');
 
 // Create LINE client
 const client = new line.Client({
@@ -66,7 +68,10 @@ async function handleEvent(event) {
 
       case 'postback':
         console.log('Postback event received:', event.postback.data);
-        // TODO: Handle postback
+        // Handle rich menu postbacks
+        if (event.postback.data.startsWith('action=')) {
+          await handleRichMenuPostback(event);
+        }
         break;
 
       case 'beacon':

@@ -30,20 +30,47 @@ const { isPremium } = require('../services/subscriptionService');
  */
 async function handleMessage(event, lineClient) {
   try {
-    // Only handle text messages for now
-    if (event.message.type !== 'text') {
-      console.log('Non-text message received:', event.message.type);
-      return;
-    }
-
-    const messageText = event.message.text;
+    const messageType = event.message.type;
     const groupId = event.source.groupId || event.source.userId;
     const replyToken = event.replyToken;
 
-    // Log the message
-    console.log('Received message:', messageText);
-    console.log('From user:', event.source.userId);
-    console.log('In group:', groupId);
+    // Handle different message types
+    if (messageType === 'text') {
+      await handleTextMessage(event, lineClient);
+    } else if (messageType === 'image') {
+      await handleImageMessage(event, lineClient);
+    } else if (messageType === 'audio') {
+      await handleVoiceMessage(event, lineClient);
+    } else {
+      console.log('Unsupported message type:', messageType);
+    }
+  } catch (error) {
+    console.error('Error handling message:', error);
+    try {
+      const errorMsg = formatErrorMessage(error);
+      await lineClient.replyMessage(event.replyToken, {
+        type: 'text',
+        text: errorMsg,
+      });
+    } catch (replyError) {
+      console.error('Error sending error message:', replyError);
+    }
+  }
+}
+
+/**
+ * Handle text message
+ * @param {Object} event - LINE message event
+ * @param {Object} lineClient - LINE client instance
+ */
+async function handleTextMessage(event, lineClient) {
+  const groupId = event.source.groupId || event.source.userId;
+  const replyToken = event.replyToken;
+
+  // Log the message
+  console.log('Received text message:', messageText);
+  console.log('From user:', event.source.userId);
+  console.log('In group:', groupId);
 
     // Check if message is from a bot (ignore bot messages)
     if (isBotMessage(event)) {
@@ -210,19 +237,133 @@ async function handleMessage(event, lineClient) {
       // Don't throw - we've already translated, just log the error
     }
 
-  } catch (error) {
-    console.error('Error handling message:', error);
-    // Try to send error message if possible
-    try {
-      const replyToken = event.replyToken;
-      const errorMsg = formatErrorMessage(error);
+}
+
+/**
+ * Handle image message with OCR
+ * @param {Object} event - LINE message event
+ * @param {Object} lineClient - LINE client instance
+ */
+async function handleImageMessage(event, lineClient) {
+  try {
+    const groupId = event.source.groupId || event.source.userId;
+    const replyToken = event.replyToken;
+
+    console.log('Received image message');
+    console.log('From user:', event.source.userId);
+    console.log('In group:', groupId);
+
+    // Get group configuration
+    let groupConfig = await getGroupConfig(groupId);
+    if (!groupConfig || !groupConfig.languages || groupConfig.languages.length === 0) {
+      const defaultLangs = DEFAULT_SETTINGS.DEFAULT_LANGUAGES;
+      groupConfig = await saveGroupConfig(groupId, defaultLangs, {
+        groupName: event.source.type === 'group' ? `Group ${groupId.substring(0, 8)}` : 'Private Chat',
+      });
+    }
+
+    // Check usage limits
+    const usageCheck = await checkUsageLimit(groupId);
+    if (!usageCheck.withinLimit) {
       await lineClient.replyMessage(replyToken, {
         type: 'text',
-        text: errorMsg,
+        text: formatErrorMessage(new Error('Daily usage limit reached')),
       });
-    } catch (replyError) {
-      console.error('Error sending error message:', replyError);
+      return;
     }
+
+    // Process image with OCR
+    const { handleImageMessage: processImage } = require('../services/ocrService');
+    const result = await processImage(event, groupConfig.languages);
+
+    if (!result || !result.translations || result.translations.length === 0) {
+      await lineClient.replyMessage(replyToken, {
+        type: 'text',
+        text: 'No text found in image or translation failed.',
+      });
+      return;
+    }
+
+    // Format and send translations
+    let formattedMessage = `📷 Image Text (${result.sourceLanguage}):\n${result.originalText}\n\n`;
+    formattedMessage += formatTranslations(result.translations, result.sourceLanguage);
+    formattedMessage = truncateMessage(formattedMessage);
+
+    await lineClient.replyMessage(replyToken, {
+      type: 'text',
+      text: formattedMessage,
+    });
+
+    // Update usage
+    await trackUsage(groupId, result.originalText.length);
+    await incrementUsage(groupId, result.originalText.length);
+  } catch (error) {
+    console.error('Error handling image message:', error);
+    throw error;
+  }
+}
+
+/**
+ * Handle voice message
+ * @param {Object} event - LINE message event
+ * @param {Object} lineClient - LINE client instance
+ */
+async function handleVoiceMessage(event, lineClient) {
+  try {
+    const groupId = event.source.groupId || event.source.userId;
+    const replyToken = event.replyToken;
+
+    console.log('Received voice message');
+    console.log('From user:', event.source.userId);
+    console.log('In group:', groupId);
+
+    // Get group configuration
+    let groupConfig = await getGroupConfig(groupId);
+    if (!groupConfig || !groupConfig.languages || groupConfig.languages.length === 0) {
+      const defaultLangs = DEFAULT_SETTINGS.DEFAULT_LANGUAGES;
+      groupConfig = await saveGroupConfig(groupId, defaultLangs, {
+        groupName: event.source.type === 'group' ? `Group ${groupId.substring(0, 8)}` : 'Private Chat',
+      });
+    }
+
+    // Check usage limits
+    const usageCheck = await checkUsageLimit(groupId);
+    if (!usageCheck.withinLimit) {
+      await lineClient.replyMessage(replyToken, {
+        type: 'text',
+        text: formatErrorMessage(new Error('Daily usage limit reached')),
+      });
+      return;
+    }
+
+    // Process voice message
+    const { handleVoiceMessage: processVoice } = require('../services/voiceService');
+    const result = await processVoice(event, groupConfig.languages);
+
+    if (!result || !result.translations || result.translations.length === 0) {
+      await lineClient.replyMessage(replyToken, {
+        type: 'text',
+        text: 'Could not transcribe or translate voice message.',
+      });
+      return;
+    }
+
+    // Format and send translations
+    let formattedMessage = `🎤 Voice Message (${result.sourceLanguage}):\n${result.originalText}\n\n`;
+    formattedMessage += formatTranslations(result.translations, result.sourceLanguage);
+    formattedMessage = truncateMessage(formattedMessage);
+
+    await lineClient.replyMessage(replyToken, {
+      type: 'text',
+      text: formattedMessage,
+    });
+
+    // Update usage
+    await trackUsage(groupId, result.originalText.length);
+    await incrementUsage(groupId, result.originalText.length);
+  } catch (error) {
+    console.error('Error handling voice message:', error);
+    throw error;
   }
 }
 
