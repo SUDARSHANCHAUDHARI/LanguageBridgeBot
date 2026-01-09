@@ -1,111 +1,113 @@
-# @LanguageBridgeBot
+# 🌍 LanguageBridgeBot
 
-A LINE messaging bot that automatically translates messages in 35 languages, with a special focus on Indian languages.
+<div align="center">
 
-## 🌟 Features
+**A powerful LINE messaging bot that automatically translates messages in 35 languages with AI-powered context understanding**
 
-- **35 Language Support**: Including Hindi, Marathi, Telugu, Bengali, Tamil, Urdu, and 29 more
-- **Auto Language Detection**: Automatically detects the source language
-- **Multi-Language Translation**: Translate to multiple languages simultaneously
-- **Group & 1-on-1 Chat Support**: Works in both group chats and private conversations
-- **Smart Caching**: Reduces API costs and improves response time
-- **Free Tier**: 20 messages per day
-- **Premium Features**: Unlimited translations, advanced features
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](https://github.com/SUDARSHANCHAUDHARI/LanguageBridgeBot)
+
+[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [API](#-api) • [Contributing](#-contributing)
+
+</div>
+
+---
+
+## 📖 Overview
+
+**LanguageBridgeBot** is an intelligent LINE messaging bot that breaks down language barriers in group chats and private conversations. It automatically detects languages and translates messages in real-time, supporting **35 languages** with special focus on **Indian languages**.
+
+Perfect for:
+- 🌏 International teams and communities
+- 🇮🇳 Multi-language Indian groups (Hindi, Marathi, Telugu, Bengali, Tamil, etc.)
+- 📱 LINE group chats and 1-on-1 conversations
+- 🎯 Real-time multilingual communication
+
+---
+
+## ✨ Features
+
+### Core Features
+- 🌐 **35 Language Support** - Asian, European, and Indian languages
+- 🔍 **Auto Language Detection** - Automatically detects source language
+- 🚀 **Multi-Language Translation** - Translate to multiple languages simultaneously
+- 💬 **Group & Private Chat** - Works in both group chats and 1-on-1 conversations
+- ⚡ **Smart Caching** - Reduces API costs and improves response time
+- 🛡️ **Rate Limiting** - Prevents abuse and ensures fair usage
+- 🚫 **Anti-Spam** - Intelligent spam detection and blocking
+
+### Premium Features
+- 🎤 **Voice Message Translation** - Transcribe and translate voice messages
+- 📷 **OCR Image Translation** - Extract and translate text from images
+- 🤖 **AI Context Understanding** - Context-aware translations with OpenAI
+- 📊 **Advanced Analytics** - Detailed usage statistics and insights
+- ♾️ **Unlimited Translations** - No daily limits
+- 🔢 **Unlimited Languages** - Translate to as many languages as you want
+- ⚡ **Priority Processing** - Faster translation responses
+
+### Advanced Features
+- 🎨 **Rich Menu** - LINE Rich Menu for quick command access
+- 💳 **Premium Subscriptions** - Stripe integration for payments
+- 🔬 **A/B Testing** - Test different translation strategies
+- 🤖 **Multi-Bot Support** - Manage multiple LINE bot instances
+- 📈 **Web Dashboard** - Admin panel for stats and group management
+- 📊 **Analytics Dashboard** - Usage metrics and insights
+- 📚 **Swagger API Docs** - Interactive API documentation
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js v18 or higher
-- npm v9 or higher
-- LINE Developer Account
-- Google Cloud Translation API Key
-- MongoDB Atlas account (or local MongoDB)
+- **Node.js** v18 or higher
+- **npm** v9 or higher
+- **LINE Developer Account** - [Get one here](https://developers.line.biz/)
+- **Google Cloud Translation API Key** - [Get one here](https://console.cloud.google.com/)
+- **MongoDB Atlas** (recommended) or local MongoDB - [Get one here](https://www.mongodb.com/cloud/atlas)
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd LanguageBridgeBot
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SUDARSHANCHAUDHARI/LanguageBridgeBot.git
+   cd LanguageBridgeBot
+   ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3. Copy environment variables:
-```bash
-cp .env.example .env
-```
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and add your credentials:
+   ```env
+   LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
+   LINE_CHANNEL_SECRET=your_line_channel_secret
+   GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
+   MONGODB_URI=your_mongodb_connection_string
+   ```
 
-4. Configure your `.env` file with your credentials:
-   - LINE Channel Access Token
-   - LINE Channel Secret
-   - Google Translate API Key
-   - MongoDB URI
+4. **Start the server**
+   ```bash
+   # Development mode (with hot reload)
+   npm run dev
+   
+   # Production mode
+   npm start
+   ```
 
-5. Start the development server:
-```bash
-npm run dev
-```
+5. **Configure LINE Webhook**
+   - Go to [LINE Developers Console](https://developers.line.biz/console/)
+   - Set webhook URL: `https://your-domain.com/webhook`
+   - Enable webhook
 
-## 📁 Project Structure
-
-```
-LanguageBridgeBot/
-├── src/
-│   ├── bot/          # Webhook handlers, commands
-│   ├── services/     # Translation, database services
-│   ├── utils/        # Helpers, validators
-│   ├── config/       # Environment, constants
-│   └── index.js      # Main entry point
-├── tests/            # Test files
-├── .env.example      # Environment variables template
-└── package.json      # Dependencies and scripts
-```
-
-## 🛠️ Available Scripts
-
-- `npm start` - Start production server
-- `npm run dev` - Start development server with nodemon
-- `npm test` - Run tests
-- `npm run test:coverage` - Run tests with coverage
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
-
-## 📚 Documentation
-
-- [Project Plan](./PROJECT_PLAN.md) - Complete development guide
-- [Competitive Analysis](./COMPETITIVE_ANALYSIS.md) - Market analysis
-- [Feature Comparison](./FEATURE_COMPARISON.md) - Feature comparison with competitors
-- [Setup Guide](./docs/SETUP.md) - Step-by-step setup instructions
-- [Deployment Guide](./docs/DEPLOYMENT.md) - Deployment instructions
-- [Commands Guide](./docs/COMMANDS.md) - Bot commands documentation
-- [API Documentation](./docs/API.md) - API and architecture docs
-
-## 🔧 Configuration
-
-See `.env.example` for all required environment variables.
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run unit tests only
-npm run test:unit
-
-# Run integration tests only
-npm run test:integration
-
-# Run tests with coverage
-npm run test:coverage
-```
-
-## 🐳 Docker
+### Docker Deployment
 
 ```bash
 # Build image
@@ -115,16 +117,285 @@ docker build -t language-bridge-bot .
 docker-compose up -d
 ```
 
-## 📝 License
+---
 
-MIT
+## 📱 Usage
+
+### Basic Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `/help` or `/start` | Show help message | `/help` |
+| `/languages` | List all supported languages | `/languages` |
+| `/set [lang1] [lang2] ...` | Configure translation languages | `/set en th hi` |
+| `/status` | Show group configuration and usage | `/status` |
+| `/about` | Show bot information | `/about` |
+| `/reset` | Reset group configuration | `/reset` |
+
+### Example Workflow
+
+1. **Add bot to your LINE group**
+2. **Set languages**: `/set en th hi mr`
+3. **Start chatting** - Bot automatically translates!
+
+```
+You: Hello, how are you?
+Bot: 🇹🇭 สวัสดี คุณเป็นอย่างไรบ้าง?
+     🇮🇳 नमस्ते, आप कैसे हैं?
+     🇮🇳 नमस्कार, तुम्ही कसे आहात?
+```
+
+---
+
+## 🏗️ Project Structure
+
+```
+LanguageBridgeBot/
+├── src/
+│   ├── bot/              # Webhook handlers, commands, rich menu
+│   ├── services/         # Translation, database, analytics, payment services
+│   ├── utils/            # Helpers, validators, performance utilities
+│   ├── config/           # Environment, constants
+│   ├── middleware/       # Security, logging middleware
+│   ├── dashboard/        # Web dashboard and analytics
+│   └── index.js          # Main entry point
+├── tests/                # Unit and integration tests
+├── docs/                 # Documentation
+├── scripts/              # Deployment and utility scripts
+├── .env.example          # Environment variables template
+├── docker-compose.yml    # Docker Compose configuration
+├── Dockerfile            # Docker configuration
+└── package.json          # Dependencies and scripts
+```
+
+---
+
+## 🛠️ Available Scripts
+
+```bash
+# Development
+npm run dev              # Start development server with nodemon
+
+# Production
+npm start                # Start production server
+
+# Testing
+npm test                 # Run all tests
+npm run test:unit        # Run unit tests only
+npm run test:integration # Run integration tests only
+npm run test:coverage    # Run tests with coverage report
+
+# Code Quality
+npm run lint             # Run ESLint
+npm run lint:fix         # Fix ESLint errors
+```
+
+---
+
+## 📚 Documentation
+
+### Core Documentation
+- 📋 [Project Plan](./PROJECT_PLAN.md) - Complete development guide
+- 🎯 [Implementation Status](./IMPLEMENTATION_STATUS.md) - Completed features
+- ➕ [Features Added](./FEATURES_ADDED.md) - Additional features beyond core
+
+### Setup & Deployment
+- 🔧 [Setup Guide](./docs/SETUP.md) - Step-by-step setup instructions
+- 🚀 [Deployment Guide](./docs/DEPLOYMENT.md) - Deployment instructions
+- 🐳 [Docker Guide](./docs/DEPLOYMENT.md#docker) - Docker deployment
+
+### User Guides
+- 📖 [User Guide](./docs/USER_GUIDE.md) - End-user documentation
+- 💬 [Commands Guide](./docs/COMMANDS.md) - Bot commands reference
+
+### API & Technical
+- 🔌 [API Documentation](./docs/API.md) - REST API documentation
+- 📊 [Swagger UI](./api-docs) - Interactive API documentation (when running)
+- 🏛️ [Architecture](./docs/API.md#architecture) - System architecture
+
+### Analysis
+- 📊 [Competitive Analysis](./COMPETITIVE_ANALYSIS.md) - Market analysis
+- 🔍 [Feature Comparison](./FEATURE_COMPARISON.md) - Feature comparison with competitors
+
+---
+
+## 🔌 API
+
+### Endpoints
+
+- `GET /health` - Health check
+- `GET /dashboard` - Dashboard overview (requires auth)
+- `GET /dashboard/groups` - List all groups (requires auth)
+- `GET /dashboard/analytics` - Analytics data (requires auth)
+- `GET /api-docs` - Swagger UI documentation
+- `POST /webhook` - LINE webhook endpoint
+- `POST /webhook/stripe` - Stripe webhook endpoint
+
+### Authentication
+
+Dashboard endpoints require authentication via `Authorization` header:
+```bash
+curl -H "Authorization: your_dashboard_secret_key" \
+  https://your-domain.com/dashboard
+```
+
+See [API Documentation](./docs/API.md) for complete API reference.
+
+---
+
+## 🌐 Supported Languages
+
+### Asian Languages (16)
+🇹🇭 Thai • 🇯🇵 Japanese • 🇰🇷 Korean • 🇨🇳 Chinese (Simplified) • 🇹🇼 Chinese (Traditional) • 🇻🇳 Vietnamese • 🇮🇩 Indonesian • 🇲🇾 Malay • 🇵🇭 Filipino • 🇸🇬 Singaporean • 🇱🇰 Sinhala • 🇲🇲 Burmese • 🇰🇭 Khmer • 🇱🇦 Lao • 🇧🇩 Bengali • 🇵🇰 Urdu
+
+### European Languages (15)
+🇬🇧 English • 🇪🇸 Spanish • 🇫🇷 French • 🇩🇪 German • 🇮🇹 Italian • 🇵🇹 Portuguese • 🇷🇺 Russian • 🇳🇱 Dutch • 🇵🇱 Polish • 🇬🇷 Greek • 🇹🇷 Turkish • 🇨🇿 Czech • 🇷🇴 Romanian • 🇭🇺 Hungarian • 🇸🇪 Swedish
+
+### Indian Languages (5) ⭐
+🇮🇳 Hindi • 🇮🇳 Marathi • 🇮🇳 Telugu • 🇮🇳 Tamil • 🇮🇳 Gujarati
+
+**Total: 35 languages**
+
+---
+
+## 🔧 Configuration
+
+### Required Environment Variables
+
+```env
+LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
+LINE_CHANNEL_SECRET=your_line_channel_secret
+GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
+MONGODB_URI=your_mongodb_connection_string
+```
+
+### Optional Environment Variables
+
+```env
+# Premium Features
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+GOOGLE_VISION_API_KEY=your_google_vision_api_key      # For OCR
+GOOGLE_SPEECH_API_KEY=your_google_speech_api_key       # For voice
+OPENAI_API_KEY=your_openai_api_key                     # For AI context
+
+# Dashboard
+DASHBOARD_SECRET_KEY=your_secure_random_string
+DASHBOARD_PORT=3001
+
+# Features
+ENABLE_MULTI_BOT=false
+ENABLE_AB_TESTING=false
+```
+
+See [`.env.example`](./.env.example) for complete configuration options.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Run specific test suites
+npm run test:unit
+npm run test:integration
+```
+
+---
+
+## 🐳 Docker
+
+### Build and Run
+
+```bash
+# Build image
+docker build -t language-bridge-bot .
+
+# Run container
+docker run -p 3000:3000 --env-file .env language-bridge-bot
+```
+
+### Docker Compose
+
+```bash
+# Start all services (bot + MongoDB)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+---
+
+## 📊 Features Comparison
+
+| Feature | Free Tier | Premium |
+|---------|-----------|---------|
+| Daily Translations | 20 | Unlimited |
+| Languages per Group | 2 | Unlimited |
+| Voice Translation | ❌ | ✅ |
+| Image OCR Translation | ❌ | ✅ |
+| AI Context Understanding | ❌ | ✅ |
+| Priority Processing | ❌ | ✅ |
+| Translation History | ❌ | ✅ |
+| Advanced Analytics | ❌ | ✅ |
+
+---
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
-## ✅ Implementation Status
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-All core phases (1-7) have been completed! See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for details.
+---
 
-**Status:** 🚀 **PRODUCTION READY**
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- [LINE Messaging API](https://developers.line.biz/)
+- [Google Cloud Translation API](https://cloud.google.com/translate)
+- [MongoDB](https://www.mongodb.com/)
+- All contributors and users
+
+---
+
+## 📞 Support
+
+- 📖 [User Guide](./docs/USER_GUIDE.md) - For end-users
+- 🔧 [Setup Guide](./docs/SETUP.md) - For setup help
+- 🐛 [Issues](https://github.com/SUDARSHANCHAUDHARI/LanguageBridgeBot/issues) - Report bugs or request features
+- 💬 [Discussions](https://github.com/SUDARSHANCHAUDHARI/LanguageBridgeBot/discussions) - Ask questions
+
+---
+
+## ⭐ Star History
+
+If you find this project useful, please consider giving it a star! ⭐
+
+---
+
+<div align="center">
+
+**Made with ❤️ for breaking down language barriers**
+
+[⬆ Back to Top](#-languagebridgebot)
+
+</div>
