@@ -49,3 +49,6 @@ temp/
 # Cache
 .cache/
 PLAN.md
+
+# graphify knowledge graph
+graphify-out/
