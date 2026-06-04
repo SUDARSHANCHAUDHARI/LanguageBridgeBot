@@ -27,7 +27,7 @@ async function isPremium(groupId) {
  * @param {string} feature - Feature name
  * @returns {Promise<boolean>} True if can access
  */
-async function canAccessPremiumFeature(groupId, feature) {
+async function canAccessPremiumFeature(groupId, _feature) {
   const premium = await isPremium(groupId);
   if (!premium) {
     return false;

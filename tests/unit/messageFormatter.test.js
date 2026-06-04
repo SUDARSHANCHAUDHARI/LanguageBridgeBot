@@ -62,7 +62,9 @@ describe('MessageFormatter', () => {
     it('should truncate at word boundary when possible', () => {
       const text = 'word '.repeat(2000); // ~10000 chars
       const result = truncateMessage(text, 5000);
-      expect(result).not.toContain('word word'); // Should break at word boundary
+      expect(result.endsWith('...')).toBe(true);
+      expect(result.length).toBeLessThanOrEqual(5000);
+      expect(result.at(-4)).toBe('d');
     });
   });
 

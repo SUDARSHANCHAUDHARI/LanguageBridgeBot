@@ -5,7 +5,7 @@
 
 const stripe = require('stripe');
 const config = require('../config/environment');
-const { saveGroupConfig, getGroupConfig } = require('./databaseService');
+const { getGroupConfig } = require('./databaseService');
 const { upgradeToPremium, downgradeFromPremium } = require('./subscriptionService');
 
 // Initialize Stripe client
@@ -35,8 +35,8 @@ async function createCheckoutSession(groupId, priceId = 'price_premium_monthly')
         },
       ],
       mode: 'subscription',
-      success_url: `${process.env.DASHBOARD_URL || 'https://your-domain.com'}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.DASHBOARD_URL || 'https://your-domain.com'}/cancel`,
+      success_url: `${process.env.DASHBOARD_URL || 'https://example.com'}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.DASHBOARD_URL || 'https://example.com'}/cancel`,
       metadata: {
         groupId,
       },
@@ -181,7 +181,7 @@ async function getCustomerPortalUrl(groupId) {
 
     const session = await stripeClient.billingPortal.sessions.create({
       customer: groupConfig.stripeCustomerId,
-      return_url: `${process.env.DASHBOARD_URL || 'https://your-domain.com'}/dashboard`,
+      return_url: `${process.env.DASHBOARD_URL || 'https://example.com'}/dashboard`,
     });
 
     return session.url;

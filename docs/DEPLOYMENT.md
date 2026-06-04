@@ -16,7 +16,7 @@ Guide to deploy @LanguageBridgeBot to production.
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin <your-repo-url>
+git remote add origin YOUR_REPOSITORY_URL
 git push -u origin main
 ```
 
@@ -34,7 +34,7 @@ git push -u origin main
 
 4. **Set Webhook URL**
    - Copy Railway deployment URL
-   - Update LINE webhook: `https://your-app.railway.app/webhook`
+   - Update LINE webhook: `https://YOUR_DOMAIN/webhook`
 
 5. **Deploy**
    - Railway auto-deploys on git push
@@ -83,10 +83,10 @@ docker-compose up -d
 ```env
 NODE_ENV=production
 PORT=3000
-LINE_CHANNEL_ACCESS_TOKEN=<your-token>
-LINE_CHANNEL_SECRET=<your-secret>
-GOOGLE_TRANSLATE_API_KEY=<your-key>
-MONGODB_URI=<your-mongodb-uri>
+LINE_CHANNEL_ACCESS_TOKEN=YOUR_LINE_CHANNEL_ACCESS_TOKEN
+LINE_CHANNEL_SECRET=YOUR_LINE_CHANNEL_SECRET
+GOOGLE_TRANSLATE_API_KEY=YOUR_GOOGLE_TRANSLATE_API_KEY
+MONGODB_URI=YOUR_MONGODB_URI
 CACHE_TTL=3600
 RATE_LIMIT_WINDOW=60000
 RATE_LIMIT_MAX_REQUESTS=30

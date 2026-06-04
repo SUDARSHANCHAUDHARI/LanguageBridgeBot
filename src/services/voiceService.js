@@ -5,7 +5,6 @@
 
 const { SpeechClient } = require('@google-cloud/speech');
 const config = require('../config/environment');
-const { translateText } = require('./translationService');
 const { client } = require('../bot/webhook');
 
 // Initialize Google Speech-to-Text client

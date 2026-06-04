@@ -10,6 +10,7 @@ process.env.LINE_CHANNEL_SECRET = 'test_secret';
 process.env.GOOGLE_TRANSLATE_API_KEY = 'test_api_key';
 process.env.MONGODB_URI = 'mongodb://localhost:27017/test_db';
 process.env.PORT = '3001';
+process.env.DASHBOARD_SECRET_KEY = 'test_dashboard_secret';
 
 // Suppress console logs during tests (optional)
 // global.console = {

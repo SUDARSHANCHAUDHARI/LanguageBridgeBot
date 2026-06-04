@@ -59,9 +59,20 @@ describe('Webhook Integration', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should handle health check', async () => {
+  it('should report degraded health when database is not connected', async () => {
     const response = await request(app).get('/health');
+    expect(response.status).toBe(503);
+    expect(response.body.status).toBe('degraded');
+    expect(response.body.checks.database.status).toBe('unhealthy');
+  });
+
+  it('should return dashboard health with a valid dashboard token', async () => {
+    const response = await request(app)
+      .get('/dashboard/health')
+      .set('Authorization', 'test_dashboard_secret');
+
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('ok');
+    expect(response.body.health.status).toBe('degraded');
   });
 });

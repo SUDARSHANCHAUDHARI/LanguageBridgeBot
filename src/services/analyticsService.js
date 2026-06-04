@@ -3,8 +3,7 @@
  * Tracks metrics and usage statistics
  */
 
-const { getGroupStats, getAllActiveGroups } = require('./databaseService');
-const { getCacheStats } = require('./cacheService');
+const { getAllActiveGroups } = require('./databaseService');
 const { getTranslationCacheStats } = require('./translationService');
 
 // In-memory metrics (in production, store in database)

@@ -5,11 +5,7 @@
 
 const { client } = require('./webhook');
 const {
-  SUPPORTED_LANGUAGES,
-  LANGUAGE_NAMES,
-  LANGUAGE_FLAGS,
   INDIAN_LANGUAGES,
-  LANGUAGES_BY_REGION,
   DEFAULT_SETTINGS,
   isValidLanguageCode,
   getLanguageInfo,
@@ -17,7 +13,6 @@ const {
 const { saveGroupConfig, getGroupConfig, deactivateGroup } = require('../services/databaseService');
 const { getUsageInfo } = require('../services/usageService');
 const {
-  formatWelcomeMessage,
   formatHelpMessage,
   formatLanguageList,
   formatStatusMessage,

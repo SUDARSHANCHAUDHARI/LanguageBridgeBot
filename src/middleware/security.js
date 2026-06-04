@@ -5,7 +5,6 @@
 
 const crypto = require('crypto');
 const config = require('../config/environment');
-const { RateLimitError } = require('../utils/errorHandler');
 
 // Rate limit stores: { identifier: { count: number, resetAt: timestamp } }
 const ipRateLimitStore = new Map();
@@ -198,7 +197,8 @@ function cleanupRateLimits() {
 }
 
 // Clean up expired entries every 5 minutes
-setInterval(cleanupRateLimits, 5 * 60 * 1000);
+const cleanupInterval = setInterval(cleanupRateLimits, 5 * 60 * 1000);
+cleanupInterval.unref?.();
 
 module.exports = {
   validateLineSignature,

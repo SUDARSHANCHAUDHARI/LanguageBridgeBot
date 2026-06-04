@@ -3,7 +3,8 @@
  * Handles all translation operations using Google Cloud Translation API
  */
 
-const { Translate } = require('@google-cloud/translate').v2;
+const translatePackage = require('@google-cloud/translate');
+const Translate = translatePackage.v2?.Translate || translatePackage.Translate;
 const config = require('../config/environment');
 const { isValidLanguageCode, getLanguageInfo } = require('../config/constants');
 const { DEFAULT_SETTINGS } = require('../config/constants');
@@ -14,10 +15,17 @@ const {
 } = require('./cacheService');
 const CircuitBreaker = require('../utils/circuitBreaker');
 
-// Initialize Google Translate client
-const translate = new Translate({
-  key: config.google.translateApiKey,
-});
+let translateClient = null;
+
+function getTranslateClient() {
+  if (!translateClient || config.server.nodeEnv === 'test') {
+    translateClient = new Translate({
+      key: config.google.translateApiKey,
+    });
+  }
+
+  return translateClient;
+}
 
 // Circuit breaker for translation API
 const translationCircuitBreaker = new CircuitBreaker({
@@ -62,7 +70,8 @@ async function detectLanguage(text) {
       return 'en'; // Default to English
     }
 
-    const [detection] = await translate.detect(text);
+    const detectionResult = await getTranslateClient().detect(text);
+    const detection = Array.isArray(detectionResult) ? detectionResult[0] : detectionResult;
     
     if (!detection || !detection.language) {
       console.warn('Language detection returned no result');
@@ -142,9 +151,11 @@ async function translateText(text, sourceLang, targetLang) {
     // Create new request promise
     const requestPromise = (async () => {
       try {
+        let timeoutId;
+
         // Create timeout promise
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             reject(new Error('Translation timeout: exceeded 5 seconds'));
           }, DEFAULT_SETTINGS.TRANSLATION_TIMEOUT);
         });
@@ -152,7 +163,7 @@ async function translateText(text, sourceLang, targetLang) {
         // Translation promise with circuit breaker and retry
         const translationPromise = translationCircuitBreaker.execute(() =>
           retryWithBackoff(() =>
-            translate.translate(text, {
+            getTranslateClient().translate(text, {
               from: sourceLang,
               to: targetLang,
             })
@@ -160,8 +171,11 @@ async function translateText(text, sourceLang, targetLang) {
         );
 
         // Race between translation and timeout
-        const [translations] = await Promise.race([translationPromise, timeoutPromise]);
-        return translations;
+        try {
+          return await Promise.race([translationPromise, timeoutPromise]);
+        } finally {
+          clearTimeout(timeoutId);
+        }
       } finally {
         // Remove from pending requests
         pendingRequests.delete(requestKey);
@@ -171,7 +185,7 @@ async function translateText(text, sourceLang, targetLang) {
     // Store pending request
     pendingRequests.set(requestKey, requestPromise);
 
-    const [translations] = await requestPromise;
+    const translations = await requestPromise;
 
     if (!translations || translations.length === 0) {
       throw new Error('Translation returned empty result');

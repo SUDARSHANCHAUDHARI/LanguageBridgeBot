@@ -173,7 +173,9 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
 
 // Graceful shutdown
 async function gracefulShutdown(signal) {

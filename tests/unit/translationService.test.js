@@ -8,6 +8,9 @@ const {
   translateToMultiple,
   validateLanguageCode,
 } = require('../../src/services/translationService');
+const { clearCache } = require('../../src/services/cacheService');
+
+jest.setTimeout(10000);
 
 // Mock Google Cloud Translation API
 jest.mock('@google-cloud/translate', () => ({
@@ -32,6 +35,7 @@ describe('TranslationService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    clearCache();
   });
 
   describe('detectLanguage', () => {
@@ -93,7 +97,7 @@ describe('TranslationService', () => {
 
     it('should handle timeout', async () => {
       mockTranslate.translate.mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 6000))
+        () => new Promise(() => {})
       );
 
       await expect(translateText('Hello', 'en', 'th')).rejects.toThrow('timeout');

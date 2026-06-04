@@ -142,7 +142,7 @@ function getTestStats(variant = null) {
     },
   };
 
-  for (const [key, data] of testResults.entries()) {
+  for (const data of testResults.values()) {
     if (variant && data.variant !== variant) {
       continue;
     }

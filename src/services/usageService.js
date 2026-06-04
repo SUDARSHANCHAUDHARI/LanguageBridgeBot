@@ -130,7 +130,6 @@ async function checkUsageLimit(groupId) {
 async function trackUsage(groupId, messageLength = 0) {
   try {
     const group = await getGroupConfig(groupId);
-    const today = getTodayDateString();
 
     if (!group) {
       // Create new group entry

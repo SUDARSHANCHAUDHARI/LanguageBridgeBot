@@ -57,10 +57,10 @@ cp .env.example .env
 
 2. Edit `.env` and fill in your credentials:
 ```env
-LINE_CHANNEL_ACCESS_TOKEN=your_token_here
-LINE_CHANNEL_SECRET=your_secret_here
-GOOGLE_TRANSLATE_API_KEY=your_api_key_here
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+LINE_CHANNEL_ACCESS_TOKEN=YOUR_LINE_CHANNEL_ACCESS_TOKEN
+LINE_CHANNEL_SECRET=YOUR_LINE_CHANNEL_SECRET
+GOOGLE_TRANSLATE_API_KEY=YOUR_GOOGLE_TRANSLATE_API_KEY
+MONGODB_URI=YOUR_MONGODB_URI
 PORT=3000
 NODE_ENV=development
 ```
@@ -90,7 +90,7 @@ ngrok http 3000
 
 4. Update LINE webhook URL in LINE Developers Console:
    - Go to your channel settings
-   - Set Webhook URL to: `https://your-ngrok-url.ngrok.io/webhook`
+   - Set Webhook URL to: `https://YOUR_TUNNEL_DOMAIN/webhook`
    - Enable webhook
 
 ## Step 7: Test with LINE
