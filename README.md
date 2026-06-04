@@ -2,15 +2,38 @@
 
 <div align="center">
 
-**A powerful LINE messaging bot that automatically translates messages in 35 languages with AI-powered context understanding**
+**A LINE messaging bot/backend that automatically translates messages across 35 languages with optional AI context, OCR, voice, payments, and dashboard features**
 
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](https://github.com/SUDARSHANCHAUDHARI/LanguageBridgeBot)
+[![Status](https://img.shields.io/badge/Status-Code%20Release%20Candidate-orange.svg)](RELEASE_MEMORY.md)
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [API](#-api) • [Contributing](#-contributing)
+[Status](#-status) • [Technical Decisions](#-key-technical-decisions) • [Features](#-features) • [Quick Start](#-quick-start) • [Deployment](#-deployment) • [Verification](#-verification)
 
 </div>
+
+---
+
+## 🚦 Status
+
+| Item | State |
+|---|---|
+| Release type | Production backend candidate |
+| Code readiness | Verified locally |
+| Live production | Pending real credentials and webhook smoke |
+| Deployment targets | Docker or Railway |
+| Last verified | 2026-06-04 |
+
+Verified checks:
+
+```bash
+pnpm lint
+pnpm test:unit
+pnpm test:integration
+pnpm exec jest tests/integration --runInBand --detectOpenHandles
+```
+
+> **Release note:** this repo is a code-level release candidate. A live production launch still requires LINE, MongoDB, Google Cloud, optional OpenAI/Stripe credentials, HTTPS domain setup, and real LINE webhook testing.
 
 ---
 
@@ -23,6 +46,20 @@ Perfect for:
 - 🇮🇳 Multi-language Indian groups (Hindi, Marathi, Telugu, Bengali, Tamil, etc.)
 - 📱 LINE group chats and 1-on-1 conversations
 - 🎯 Real-time multilingual communication
+
+---
+
+## 🧠 Key Technical Decisions
+
+**LINE webhook handling is kept inside an Express backend.** LINE requires signed webhook verification and fast reply behavior, so a dedicated Node.js backend keeps bot routing, validation, and API middleware together.
+
+**MongoDB stores users, groups, usage, subscriptions, and analytics.** Translation bots need durable per-user and per-group configuration; MongoDB keeps that state separate from LINE events and supports dashboard/reporting flows.
+
+**Google Cloud Translate is the primary translation engine.** It provides broad language support and predictable API behavior for the core bot experience. OpenAI is optional and used for context-aware premium behavior, not required for base translation.
+
+**Cache, rate limiting, and anti-spam are first-class release features.** Translation and AI APIs can become expensive quickly, so the backend includes caching, request limits, and abuse controls before public launch.
+
+**Tests import the app without starting the server.** The server starts only when `src/index.js` is run directly, which keeps Jest integration tests deterministic and avoids open-handle leaks.
 
 ---
 
@@ -62,7 +99,7 @@ Perfect for:
 ### Prerequisites
 
 - **Node.js** v18 or higher
-- **npm** v9 or higher
+- **pnpm** v9 or higher
 - **LINE Developer Account** - [Get one here](https://developers.line.biz/)
 - **Google Cloud Translation API Key** - [Get one here](https://console.cloud.google.com/)
 - **MongoDB Atlas** (recommended) or local MongoDB - [Get one here](https://www.mongodb.com/cloud/atlas)
@@ -77,7 +114,7 @@ Perfect for:
 
 2. **Install dependencies**
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Configure environment variables**
@@ -96,10 +133,10 @@ Perfect for:
 4. **Start the server**
    ```bash
    # Development mode (with hot reload)
-   npm run dev
+   pnpm dev
    
    # Production mode
-   npm start
+   pnpm start
    ```
 
 5. **Configure LINE Webhook**

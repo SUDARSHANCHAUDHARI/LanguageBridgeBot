@@ -63,3 +63,4 @@ Production bot/backend deployment. Current state is a code-level release candida
 - Fixed dashboard health route import/runtime mismatch and added integration coverage for `/dashboard/health`.
 - Removed unused imports and parameters so ESLint is clean.
 - Replaced key-looking and domain-specific setup placeholders in README, docs, and `.env.example` with `YOUR_*` placeholders.
+- Polished README with release-candidate status, technical decisions, pnpm setup, verification commands, and clearer production prerequisites.
