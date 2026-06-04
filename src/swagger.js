@@ -27,7 +27,7 @@ const options = {
         description: 'Development server',
       },
       {
-        url: 'https://your-domain.com',
+        url: 'https://example.com',
         description: 'Production server',
       },
     ],

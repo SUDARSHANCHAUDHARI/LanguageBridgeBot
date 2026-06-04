@@ -3,9 +3,7 @@
  * Manages multiple LINE bot instances with different configurations
  */
 
-const { MongoClient } = require('mongodb');
 const config = require('../config/environment');
-const { getGroupConfig } = require('./databaseService');
 
 // Bot configurations cache
 const botConfigs = new Map();
@@ -101,7 +99,7 @@ function updateBotSettings(botId, settings) {
  * @param {string} groupId - Group ID
  * @returns {string|null} Bot ID or null
  */
-async function getBotForGroup(groupId) {
+async function getBotForGroup(_groupId) {
   // Default: use first active bot
   const activeBots = getAllBots();
   if (activeBots.length === 0) {
@@ -122,7 +120,7 @@ async function getBotForGroup(groupId) {
  * @param {Object} event - LINE event
  * @returns {Promise<Object>} Bot configuration and client
  */
-async function routeToBot(groupId, event) {
+async function routeToBot(groupId, _event) {
   if (!config.features.multiBot) {
     // Multi-bot disabled, use default
     return {

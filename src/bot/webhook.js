@@ -8,7 +8,6 @@ const crypto = require('crypto');
 const config = require('../config/environment');
 const { handleMessage } = require('./messageHandler');
 const { handleRichMenuPostback } = require('./richMenu');
-const { routeToBot } = require('../services/multiBotService');
 
 // Create LINE client
 const client = new line.Client({

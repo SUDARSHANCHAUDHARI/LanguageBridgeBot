@@ -13,11 +13,11 @@ const {
 } = require('../../src/services/databaseService');
 
 describe('Database Integration', () => {
+  const shouldRunDatabaseTests = process.env.RUN_DATABASE_TESTS === 'true';
   const testGroupId = `test_${Date.now()}`;
 
   beforeAll(async () => {
-    // Skip if no test database configured
-    if (process.env.MONGODB_URI && process.env.MONGODB_URI.includes('test')) {
+    if (shouldRunDatabaseTests) {
       await connectDatabase();
     }
   });
@@ -27,7 +27,7 @@ describe('Database Integration', () => {
   });
 
   it('should save and retrieve group config', async () => {
-    if (!process.env.MONGODB_URI || !process.env.MONGODB_URI.includes('test')) {
+    if (!shouldRunDatabaseTests) {
       console.log('Skipping database test - no test database configured');
       return;
     }
@@ -43,7 +43,7 @@ describe('Database Integration', () => {
   });
 
   it('should increment usage statistics', async () => {
-    if (!process.env.MONGODB_URI || !process.env.MONGODB_URI.includes('test')) {
+    if (!shouldRunDatabaseTests) {
       return;
     }
 

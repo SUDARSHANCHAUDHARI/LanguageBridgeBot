@@ -87,10 +87,10 @@ Perfect for:
    
    Edit `.env` and add your credentials:
    ```env
-   LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
-   LINE_CHANNEL_SECRET=your_line_channel_secret
-   GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
-   MONGODB_URI=your_mongodb_connection_string
+   LINE_CHANNEL_ACCESS_TOKEN=YOUR_LINE_CHANNEL_ACCESS_TOKEN
+   LINE_CHANNEL_SECRET=YOUR_LINE_CHANNEL_SECRET
+   GOOGLE_TRANSLATE_API_KEY=YOUR_GOOGLE_TRANSLATE_API_KEY
+   MONGODB_URI=YOUR_MONGODB_URI
    ```
 
 4. **Start the server**
@@ -104,7 +104,7 @@ Perfect for:
 
 5. **Configure LINE Webhook**
    - Go to [LINE Developers Console](https://developers.line.biz/console/)
-   - Set webhook URL: `https://your-domain.com/webhook`
+   - Set webhook URL: `https://example.com/webhook`
    - Enable webhook
 
 ### Docker Deployment
@@ -235,8 +235,8 @@ npm run lint:fix         # Fix ESLint errors
 
 Dashboard endpoints require authentication via `Authorization` header:
 ```bash
-curl -H "Authorization: your_dashboard_secret_key" \
-  https://your-domain.com/dashboard
+curl -H "Authorization: YOUR_DASHBOARD_SECRET_KEY" \
+  https://YOUR_DOMAIN/dashboard
 ```
 
 See [API Documentation](./docs/API.md) for complete API reference.
@@ -263,24 +263,24 @@ See [API Documentation](./docs/API.md) for complete API reference.
 ### Required Environment Variables
 
 ```env
-LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
-LINE_CHANNEL_SECRET=your_line_channel_secret
-GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
-MONGODB_URI=your_mongodb_connection_string
+LINE_CHANNEL_ACCESS_TOKEN=YOUR_LINE_CHANNEL_ACCESS_TOKEN
+LINE_CHANNEL_SECRET=YOUR_LINE_CHANNEL_SECRET
+GOOGLE_TRANSLATE_API_KEY=YOUR_GOOGLE_TRANSLATE_API_KEY
+MONGODB_URI=YOUR_MONGODB_URI
 ```
 
 ### Optional Environment Variables
 
 ```env
 # Premium Features
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-GOOGLE_VISION_API_KEY=your_google_vision_api_key      # For OCR
-GOOGLE_SPEECH_API_KEY=your_google_speech_api_key       # For voice
-OPENAI_API_KEY=your_openai_api_key                     # For AI context
+STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
+STRIPE_PUBLISHABLE_KEY=YOUR_STRIPE_PUBLISHABLE_KEY
+GOOGLE_VISION_API_KEY=YOUR_GOOGLE_VISION_API_KEY      # For OCR
+GOOGLE_SPEECH_API_KEY=YOUR_GOOGLE_SPEECH_API_KEY       # For voice
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY                     # For AI context
 
 # Dashboard
-DASHBOARD_SECRET_KEY=your_secure_random_string
+DASHBOARD_SECRET_KEY=YOUR_DASHBOARD_SECRET_KEY
 DASHBOARD_PORT=3001
 
 # Features

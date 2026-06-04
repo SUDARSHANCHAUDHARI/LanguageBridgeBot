@@ -4,7 +4,6 @@
  */
 
 const { client } = require('./webhook');
-const config = require('../config/environment');
 
 /**
  * Rich Menu configuration
@@ -93,7 +92,7 @@ const RICH_MENU_CONFIG = {
       action: {
         type: 'uri',
         label: 'Premium',
-        uri: 'https://your-website.com/premium',
+        uri: 'https://example.com/premium',
       },
     },
   ],
@@ -176,7 +175,6 @@ async function handleRichMenuPostback(event) {
     const action = params.get('action');
 
     const { handleCommand } = require('./commands');
-    const userId = event.source.userId;
 
     // Map rich menu actions to commands
     const commandMap = {

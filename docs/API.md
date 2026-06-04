@@ -4,7 +4,7 @@
 
 LanguageBridgeBot provides RESTful API endpoints for monitoring, analytics, and administration.
 
-**Base URL:** `https://your-domain.com`
+**Base URL:** `https://example.com`
 
 ## Authentication
 
@@ -12,12 +12,12 @@ Most endpoints require authentication using the `DASHBOARD_SECRET_KEY` environme
 
 ### Headers
 ```
-Authorization: your_dashboard_secret_key
+Authorization: YOUR_DASHBOARD_SECRET_KEY
 ```
 
 Or as query parameter:
 ```
-?token=your_dashboard_secret_key
+?token=YOUR_DASHBOARD_SECRET_KEY
 ```
 
 ## Endpoints
@@ -250,7 +250,7 @@ Get comprehensive admin statistics.
 
 **Headers:**
 ```
-X-Admin-Token: your_admin_token
+X-Admin-Token: YOUR_ADMIN_TOKEN
 ```
 
 **Response:**
@@ -335,19 +335,19 @@ For interactive API documentation, see `/api-docs` endpoint (if Swagger UI is en
 
 **Health Check:**
 ```bash
-curl https://your-domain.com/health
+curl https://example.com/health
 ```
 
 **Get Dashboard Stats:**
 ```bash
-curl -H "Authorization: your_secret_key" \
-  https://your-domain.com/dashboard
+curl -H "Authorization: YOUR_DASHBOARD_SECRET_KEY" \
+  https://YOUR_DOMAIN/dashboard
 ```
 
 **Get Group Details:**
 ```bash
-curl -H "Authorization: your_secret_key" \
-  https://your-domain.com/dashboard/groups/C1234567890
+curl -H "Authorization: YOUR_DASHBOARD_SECRET_KEY" \
+  https://YOUR_DOMAIN/dashboard/groups/C1234567890
 ```
 
 ---

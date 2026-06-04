@@ -21,10 +21,9 @@ const FORMATTING = {
 /**
  * Format translations into a readable message
  * @param {Array} translations - Array of {lang, text, flag, name} objects
- * @param {string} sourceLang - Source language code
  * @returns {string} Formatted message
  */
-function formatTranslations(translations, sourceLang) {
+function formatTranslations(translations) {
   if (!translations || translations.length === 0) {
     return 'No translations available.';
   }
@@ -92,10 +91,9 @@ function isOnlyEmojis(text) {
   // Remove whitespace and check if remaining characters are emojis
   const cleaned = text.replace(/\s/g, '');
   // Simple emoji detection - check if most characters are non-ASCII
-  const emojiRegex = /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu;
-  const matches = cleaned.match(emojiRegex);
-  
-  return matches && matches.length === cleaned.length;
+  const emojiRegex = /[\u{1F300}-\u{1FAFF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu;
+
+  return cleaned.replace(emojiRegex, '').length === 0;
 }
 
 /**

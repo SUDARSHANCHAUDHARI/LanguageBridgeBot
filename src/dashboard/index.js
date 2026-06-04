@@ -4,11 +4,10 @@
  */
 
 const express = require('express');
-const path = require('path');
 const config = require('../config/environment');
 const { getAllActiveGroups, getGroupStats } = require('../services/databaseService');
 const { getAnalytics } = require('../services/analyticsService');
-const { getHealthStatus } = require('../services/monitoringService');
+const { checkHealth } = require('../services/monitoringService');
 
 const router = express.Router();
 
@@ -33,7 +32,7 @@ function authenticate(req, res, next) {
 router.get('/', authenticate, async (req, res) => {
   try {
     const stats = await getAnalytics();
-    const health = await getHealthStatus();
+    const health = await checkHealth();
     const groups = await getAllActiveGroups();
 
     res.json({
@@ -125,7 +124,7 @@ router.get('/analytics', authenticate, async (req, res) => {
  */
 router.get('/health', authenticate, async (req, res) => {
   try {
-    const health = await getHealthStatus();
+    const health = await checkHealth();
     res.json({
       status: 'ok',
       health,

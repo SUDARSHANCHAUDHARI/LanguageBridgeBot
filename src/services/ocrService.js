@@ -5,7 +5,7 @@
 
 const vision = require('@google-cloud/vision');
 const config = require('../config/environment');
-const { translateText, detectLanguage } = require('./translationService');
+const { detectLanguage } = require('./translationService');
 const { client } = require('../bot/webhook');
 
 // Initialize Google Vision client

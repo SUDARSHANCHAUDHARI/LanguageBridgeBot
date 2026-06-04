@@ -50,7 +50,11 @@ function validateLanguageCodes(codes) {
  */
 function validateMessageText(text) {
   if (!text || typeof text !== 'string') {
-    return { valid: false, error: 'Message text is required' };
+    return { valid: false, error: 'Message text cannot be empty' };
+  }
+
+  if (/^\s+$/.test(text)) {
+    return { valid: false, error: 'Message contains only whitespace' };
   }
 
   const trimmed = text.trim();
@@ -97,7 +101,7 @@ function validateGroupConfig(config) {
     errors.push('Languages array is required');
   } else {
     if (config.languages.length < 2) {
-      errors.push('At least 2 languages are required');
+      errors.push('At least 2 languages');
     }
 
     const langValidation = validateLanguageCodes(config.languages);
@@ -182,7 +186,7 @@ async function isGroupAdmin(userId, groupId, lineClient = null) {
         // This is a simplified check - can be enhanced
         await lineClient.getGroupMemberProfile(groupId, userId);
         return true; // If we can get profile, user might be admin
-      } catch (error) {
+      } catch {
         // If we can't get profile, user might not be admin
         return false;
       }
@@ -240,7 +244,8 @@ function normalizeText(text) {
 
   return text
     .trim()
-    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+    .replace(/[ \t\r\f\v]+/g, ' ') // Replace horizontal whitespace with single space
+    .replace(/ *\n */g, '\n') // Trim spaces around line breaks
     .replace(/\n{3,}/g, '\n\n'); // Replace 3+ newlines with 2
 }
 

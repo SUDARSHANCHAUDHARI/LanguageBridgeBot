@@ -4,7 +4,6 @@
  * Checks for commands first, then processes translations
  */
 
-const { client } = require('./webhook');
 const { handleCommand } = require('./commands');
 const { detectLanguage, translateToMultiple } = require('../services/translationService');
 const { getGroupConfig, saveGroupConfig, incrementUsage } = require('../services/databaseService');
@@ -31,8 +30,6 @@ const { isPremium } = require('../services/subscriptionService');
 async function handleMessage(event, lineClient) {
   try {
     const messageType = event.message.type;
-    const groupId = event.source.groupId || event.source.userId;
-    const replyToken = event.replyToken;
 
     // Handle different message types
     if (messageType === 'text') {
@@ -66,6 +63,7 @@ async function handleMessage(event, lineClient) {
 async function handleTextMessage(event, lineClient) {
   const groupId = event.source.groupId || event.source.userId;
   const replyToken = event.replyToken;
+  const messageText = event.message.text;
 
   // Log the message
   console.log('Received text message:', messageText);
