@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const config = require('../config/environment');
 const { handleMessage } = require('./messageHandler');
 const { handleRichMenuPostback } = require('./richMenu');
+const { formatWelcomeMessage } = require('../utils/messageFormatter');
 
 // Create LINE client
 const client = new line.Client({
@@ -47,22 +48,29 @@ async function handleEvent(event) {
 
       case 'follow':
         console.log('User followed bot:', event.source.userId);
-        // TODO: Send welcome message
+        await client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: formatWelcomeMessage(),
+        });
         break;
 
       case 'unfollow':
+        // No reply token is issued for unfollow events; nothing to send back.
+        // User-scoped data expires via the cache/usage TTLs, so no cleanup is needed here.
         console.log('User unfollowed bot:', event.source.userId);
-        // TODO: Handle unfollow
         break;
 
       case 'join':
         console.log('Bot joined group/room:', event.source.groupId || event.source.roomId);
-        // TODO: Send welcome message to group
+        await client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: formatWelcomeMessage(),
+        });
         break;
 
       case 'leave':
+        // Terminal event with no reply token; the group config simply goes idle.
         console.log('Bot left group/room:', event.source.groupId || event.source.roomId);
-        // TODO: Handle leave event
         break;
 
       case 'postback':
@@ -74,8 +82,8 @@ async function handleEvent(event) {
         break;
 
       case 'beacon':
+        // Beacon proximity events are not part of the translation product; logged only.
         console.log('Beacon event received');
-        // TODO: Handle beacon
         break;
 
       default:
@@ -126,5 +134,7 @@ async function handleWebhook(req, res) {
 
 module.exports = {
   handleWebhook,
+  handleEvent,
+  validateSignature,
   client,
 };
