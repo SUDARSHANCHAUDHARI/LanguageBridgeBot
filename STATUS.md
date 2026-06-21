@@ -103,3 +103,34 @@ Not yet deployed. Railway + Docker config present.
 - [ ] Raise coverage 37.8% → 70% (needs tests for payment / voice / OCR / subscription / usage / analytics / monitoring services)
 - [ ] Dashboard "Trend data" — currently a placeholder message
 - [ ] Live deploy needs: LINE channel token + LINE channel secret, MongoDB URI, Google Translate API key, optional Stripe + Google Vision/Speech keys
+
+## Categorized work remaining
+
+| Item | Effort | Bucket | Blocker | Priority |
+|------|--------|--------|---------|----------|
+| `validators.js:196` admin check via LINE API | ~1–2h | 🟦 Pure code | none — just needs implementation | P2 |
+| Raise coverage 38% → 70% | ~1d | 🟦 Pure code | none — write tests for the 7 untested services | P2 |
+| Dashboard "Trend data" placeholder | ~2h | 🟦 Pure code | none — implement trend data collection | P3 |
+| Live deploy to Railway | ~1h | 🔑 Needs creds | LINE channel tokens + MongoDB + Google Translate (+ optional Stripe/Vision/Speech) | P1 |
+
+## Release plan
+
+1. **Bounded engineering (no creds needed):** implement admin check, push coverage to 70%, implement trend data.
+2. **Get creds + deploy:**
+   - LINE Developers Console (free) → create channel, copy access token + secret
+   - MongoDB Atlas free tier → get connection string
+   - Google Cloud → enable Translation API, get API key
+   - Optional: Stripe live keys (for premium), Google Vision (for OCR), Google Speech (for voice)
+   - Push image to Railway via `railway.json`
+3. **Smoke test:**
+   - Add the LINE webhook URL in Console: `https://<your-domain>/webhook`
+   - Send a test message; confirm translation + history persistence
+4. **Tag release:** `gh release create v1.0.0 --title "LanguageBridgeBot v1.0.0"`
+
+### Deploy prerequisites
+- `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`
+- `MONGODB_URI`
+- `GOOGLE_TRANSLATE_API_KEY`
+- `ADMIN_TOKEN`, `DASHBOARD_SECRET_KEY`
+- Optional: `STRIPE_*` keys, `GOOGLE_VISION_API_KEY`, `GOOGLE_SPEECH_API_KEY`, `OPENAI_API_KEY`
+- Railway account (or any container host with `docker-compose.yml` support)
