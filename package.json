@@ -20,7 +20,7 @@
     "multilingual",
     "messaging"
   ],
-  "author": "",
+  "author": "Sudarshan Chaudhari (SudarshanTechLabs)",
   "license": "MIT",
   "dependencies": {
     "@google-cloud/translate": "^8.0.2",
