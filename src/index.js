@@ -59,12 +59,14 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Admin stats endpoint (basic protection - enhance in production)
-app.get('/admin/stats', async (req, res) => {
+// Admin stats endpoint (token-protected, rate limited)
+app.get('/admin/stats', rateLimiter, async (req, res) => {
   try {
-    // Basic protection - check for admin token (enhance in production)
+    // Fail closed: require a configured admin token AND a matching header.
+    // (Previously the check was skipped entirely when ADMIN_TOKEN was unset,
+    // leaving this endpoint fully public and leaking group data + metrics.)
     const adminToken = req.headers['x-admin-token'];
-    if (adminToken !== process.env.ADMIN_TOKEN && process.env.ADMIN_TOKEN) {
+    if (!process.env.ADMIN_TOKEN || adminToken !== process.env.ADMIN_TOKEN) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
