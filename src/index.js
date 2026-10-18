@@ -36,6 +36,21 @@ app.use(cors({
 // Request logging middleware (before other middleware)
 app.use(requestLogger);
 
+// Stripe webhook endpoint (for premium subscriptions)
+// Mounted before express.json(): constructEvent needs the raw, unparsed body
+app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const { handleWebhookEvent, verifyWebhookSignature } = require('./services/paymentService');
+    const signature = req.headers['stripe-signature'];
+    const event = verifyWebhookSignature(req.body, signature);
+    await handleWebhookEvent(event);
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Stripe webhook error:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Body parser for JSON (LINE webhook sends JSON)
 app.use(express.json({
   verify: (req, res, buf) => {
@@ -106,20 +121,6 @@ const dashboardRouter = require('./dashboard/index');
 const analyticsRouter = require('./dashboard/analytics');
 app.use('/dashboard', dashboardRouter);
 app.use('/dashboard/analytics', analyticsRouter);
-
-// Stripe webhook endpoint (for premium subscriptions)
-app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
-  try {
-    const { handleWebhookEvent, verifyWebhookSignature } = require('./services/paymentService');
-    const signature = req.headers['stripe-signature'];
-    const event = verifyWebhookSignature(req.body, signature);
-    await handleWebhookEvent(event);
-    res.json({ received: true });
-  } catch (error) {
-    console.error('Stripe webhook error:', error);
-    res.status(400).json({ error: error.message });
-  }
-});
 
 // LINE webhook endpoint with security middleware
 app.post('/webhook',

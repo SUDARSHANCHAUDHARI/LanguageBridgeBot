@@ -36,8 +36,10 @@ function validateLineSignature(req, res, next) {
       .update(body)
       .digest('base64');
 
-    // Compare signatures
-    if (hash !== signature) {
+    // Compare signatures (constant time; length check first because timingSafeEqual throws on mismatch)
+    const hashBuf = Buffer.from(hash);
+    const sigBuf = Buffer.from(signature);
+    if (hashBuf.length !== sigBuf.length || !crypto.timingSafeEqual(hashBuf, sigBuf)) {
       console.warn('Invalid LINE signature', {
         ip: req.ip,
         userAgent: req.get('user-agent'),

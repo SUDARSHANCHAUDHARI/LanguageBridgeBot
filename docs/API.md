@@ -15,11 +15,6 @@ Most endpoints require authentication using the `DASHBOARD_SECRET_KEY` environme
 Authorization: YOUR_DASHBOARD_SECRET_KEY
 ```
 
-Or as query parameter:
-```
-?token=YOUR_DASHBOARD_SECRET_KEY
-```
-
 ## Endpoints
 
 ### Health Check
