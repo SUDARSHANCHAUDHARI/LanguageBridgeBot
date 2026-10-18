@@ -13,7 +13,8 @@ const router = express.Router();
 
 // Simple authentication middleware
 function authenticate(req, res, next) {
-  const token = req.headers.authorization || req.query.token;
+  // Header only: a query-string secret leaks into access logs and browser history
+  const token = req.headers.authorization;
   
   if (!config.dashboard.secretKey) {
     return res.status(500).json({ error: 'Dashboard not configured' });

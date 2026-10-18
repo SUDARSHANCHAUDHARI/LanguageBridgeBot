@@ -32,7 +32,10 @@ function validateSignature(signature, body) {
     .update(body)
     .digest('base64');
 
-  return hash === signature;
+  // Constant-time compare; timingSafeEqual throws on length mismatch, so check that first
+  const hashBuf = Buffer.from(hash);
+  const sigBuf = Buffer.from(signature);
+  return hashBuf.length === sigBuf.length && crypto.timingSafeEqual(hashBuf, sigBuf);
 }
 
 /**
