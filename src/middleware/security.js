@@ -15,6 +15,22 @@ const GROUP_RATE_LIMIT = 30; // requests per minute per group
 const RATE_LIMIT_WINDOW = 60000; // 1 minute in milliseconds
 
 /**
+ * Constant-time string compare for secrets and tokens.
+ * timingSafeEqual throws on length mismatch, so check that first; non-strings never match.
+ * @param {*} a
+ * @param {*} b
+ * @returns {boolean}
+ */
+function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') {
+    return false;
+  }
+  const aBuf = Buffer.from(a);
+  const bBuf = Buffer.from(b);
+  return aBuf.length === bBuf.length && crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+/**
  * Validate LINE webhook signature
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -203,6 +219,7 @@ const cleanupInterval = setInterval(cleanupRateLimits, 5 * 60 * 1000);
 cleanupInterval.unref?.();
 
 module.exports = {
+  safeEqual,
   validateLineSignature,
   rateLimiter,
   groupRateLimiter,

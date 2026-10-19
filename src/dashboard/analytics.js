@@ -8,6 +8,7 @@ const { getAnalytics } = require('../services/analyticsService');
 const { getAllActiveGroups, getGroupStats } = require('../services/databaseService');
 const { getTestStats } = require('../services/abTestingService');
 const config = require('../config/environment');
+const { safeEqual } = require('../middleware/security');
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ function authenticate(req, res, next) {
     return res.status(500).json({ error: 'Dashboard not configured' });
   }
 
-  if (token !== config.dashboard.secretKey) {
+  if (!safeEqual(token, config.dashboard.secretKey)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -66,7 +67,8 @@ router.get('/', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard analytics error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -88,7 +90,8 @@ router.get('/trends', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard analytics error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -108,7 +111,8 @@ router.get('/languages', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard analytics error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -130,7 +134,8 @@ router.get('/performance', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard analytics error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

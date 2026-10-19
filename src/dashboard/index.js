@@ -5,6 +5,7 @@
 
 const express = require('express');
 const config = require('../config/environment');
+const { safeEqual } = require('../middleware/security');
 const { getAllActiveGroups, getGroupStats } = require('../services/databaseService');
 const { getAnalytics } = require('../services/analyticsService');
 const { checkHealth } = require('../services/monitoringService');
@@ -20,7 +21,7 @@ function authenticate(req, res, next) {
     return res.status(500).json({ error: 'Dashboard not configured' });
   }
 
-  if (token !== config.dashboard.secretKey) {
+  if (!safeEqual(token, config.dashboard.secretKey)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -52,7 +53,8 @@ router.get('/', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -78,7 +80,8 @@ router.get('/groups', authenticate, async (req, res) => {
       total: groupsWithStats.length,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -101,7 +104,8 @@ router.get('/groups/:groupId', authenticate, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -116,7 +120,8 @@ router.get('/analytics', authenticate, async (req, res) => {
       analytics,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -131,7 +136,8 @@ router.get('/health', authenticate, async (req, res) => {
       health,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

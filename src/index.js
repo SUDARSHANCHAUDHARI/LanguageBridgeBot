@@ -10,7 +10,7 @@ const config = require('./config/environment');
 const { handleWebhook } = require('./bot/webhook');
 const { connectDatabase, closeDatabase, getAllActiveGroups } = require('./services/databaseService');
 const { requestLogger, logErrorWithContext } = require('./middleware/logger');
-const { validateLineSignature, groupRateLimiter, rateLimiter } = require('./middleware/security');
+const { validateLineSignature, groupRateLimiter, rateLimiter, safeEqual } = require('./middleware/security');
 const { checkHealth, getSystemMetrics } = require('./services/monitoringService');
 const { getAnalytics } = require('./services/analyticsService');
 
@@ -81,7 +81,7 @@ app.get('/admin/stats', rateLimiter, async (req, res) => {
     // (Previously the check was skipped entirely when ADMIN_TOKEN was unset,
     // leaving this endpoint fully public and leaking group data + metrics.)
     const adminToken = req.headers['x-admin-token'];
-    if (!process.env.ADMIN_TOKEN || adminToken !== process.env.ADMIN_TOKEN) {
+    if (!process.env.ADMIN_TOKEN || !safeEqual(adminToken, process.env.ADMIN_TOKEN)) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
